@@ -1,15 +1,16 @@
+
+#ifndef defined(BP_LIB_EXPORT)
 #if defined(_WIN32) || defined(_WIN64)
-#define LIB_EXPORT extern "C" __declspec(dllexport)
-#elif defined(__linux__)
-#define LIB_EXPORT extern "C" __attribute__((visibility("default")))
-#elif defined(__APPLE__)
-#define LIB_EXPORT extern "C" __attribute__((visibility("default")))
+#define BP_LIB_EXPORT __declspec(dllexport)
+#elif defined(__linux__) || defined(__APPLE__)
+#define BP_LIB_EXPORT __attribute__((visibility("default")))
 #else
-#define LIB_EXPORT extern "C"
+#define BP_LIB_EXPORT
+#endif
 #endif
 
 extern "C"
 {
-    LIB_EXPORT void LOGE(const char *tag, const char *message, ...);
-    LIB_EXPORT void LOGI(const char *tag, const char *message, ...);
+    BP_LIB_EXPORT void LOGE(const char *tag, const char *message, ...);
+    BP_LIB_EXPORT void LOGI(const char *tag, const char *message, ...);
 }

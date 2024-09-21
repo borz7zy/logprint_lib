@@ -1,3 +1,9 @@
+#ifndef _LOGPRINT_HXX
+#define _LOGPRINT_HXX
+
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
 
 #if defined(BP_LIB_EXPORT)
 #undef BP_LIB_EXPORT
@@ -10,8 +16,26 @@
 #define BP_LIB_EXPORT
 #endif
 
-extern "C"
+class BP_LIB_EXPORT logprint
 {
-    BP_LIB_EXPORT void LOGE(const char *tag, const char *message, ...);
-    BP_LIB_EXPORT void LOGI(const char *tag, const char *message, ...);
-}
+public:
+    logprint(const char *tagCall, const char *logP) : logPath(logP), tag(tagCall)
+    {
+        printf("Logger loaded with path %s and tag %s\n", logP, tagCall);
+    }
+    ~logprint()
+    {
+        printf("Logger unloaded, path: %s, tag: %s\n", logPath, tag);
+    }
+    void LOGE(const char *message, ...);
+    void LOGI(const char *message, ...);
+
+private:
+    const char *getTimestamp();
+    char *generateFormattedString(const char *format, va_list args);
+    void writeLog(const char *message);
+    const char *logPath;
+    const char *tag;
+};
+
+#endif

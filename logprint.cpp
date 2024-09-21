@@ -1,7 +1,7 @@
+#include "logprint.hxx"
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-#include <logprint.hxx>
 #include <chrono>
 #include <cstring>
 #include <cstdarg>
@@ -12,7 +12,7 @@
 #define ERROR_COLOR "\033[31m"
 #define END_STRING "\033[0m\n"
 
-const char *getTimestamp()
+const char *logprint::getTimestamp()
 {
     static char buffer[20];
 
@@ -29,7 +29,7 @@ const char *getTimestamp()
     return buffer;
 }
 
-char *generateFormattedString(const char *tag, const char *format, va_list args)
+char *logprint::generateFormattedString(const char *format, va_list args)
 {
     size_t buffer_size = 256;
     char *buffer = (char *)malloc(buffer_size);
@@ -76,9 +76,9 @@ char *generateFormattedString(const char *tag, const char *format, va_list args)
     return finalMessage;
 }
 
-void writeLog(const char *message)
+void logprint::writeLog(const char *message)
 {
-    std::ofstream logFile("bot_platform.log", std::ios::app);
+    std::ofstream logFile(logPath, std::ios::app);
 
     if (logFile.is_open())
     {
@@ -87,16 +87,16 @@ void writeLog(const char *message)
     }
     else
     {
-        printf(ERROR_COLOR "Не удалось открыть файл для записи.\n" END_STRING);
+        printf(ERROR_COLOR "Failed to open file for writing." END_STRING);
     }
 }
 
-void LOGI(const char *tag, const char *message, ...)
+void logprint::LOGI(const char *message, ...)
 {
     va_list args;
     va_start(args, message);
 
-    char *finalMessage = generateFormattedString(tag, message, args);
+    char *finalMessage = generateFormattedString(message, args);
     va_end(args);
 
     if (finalMessage != nullptr)
@@ -107,16 +107,16 @@ void LOGI(const char *tag, const char *message, ...)
     }
     else
     {
-        printf(ERROR_COLOR "Error generating log message\n" END_STRING);
+        printf(ERROR_COLOR "Error generating log message" END_STRING);
     }
 }
 
-void LOGE(const char *tag, const char *message, ...)
+void logprint::LOGE(const char *message, ...)
 {
     va_list args;
     va_start(args, message);
 
-    char *finalMessage = generateFormattedString(tag, message, args);
+    char *finalMessage = generateFormattedString(message, args);
     va_end(args);
 
     if (finalMessage != nullptr)
@@ -127,6 +127,6 @@ void LOGE(const char *tag, const char *message, ...)
     }
     else
     {
-        printf(ERROR_COLOR "Error generating log message\n" END_STRING);
+        printf(ERROR_COLOR "Error generating log message" END_STRING);
     }
 }
